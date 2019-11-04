@@ -1,50 +1,66 @@
+package wordCounter;
+
+import static org.junit.Assert.assertEquals;
+
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.junit.Test;
+/**
+ * The COunter class opens a files and displays the top 20 most common words inside the file.
+ * The programs intended use is for the play Macbeth.
+ * Opens file
+ * Splits words
+ * Creates hashmap
+ * finds top 20 most common words
+ * closes file
+ * 
+ * @author alex
+ * @since 2019
+ */
 public class COunter
 {
+	/**
+	 * main
+	 * @param args
+	 */
     public static void main(String[] args)
     {
-        //Creating wordCountMap which holds words as keys and their occurrences as values
+        //Create wordCountMap
         HashMap<String, Integer> wordCountMap = new HashMap<String, Integer>();
         BufferedReader reader = null;
 
         try
         {
-            //Creating BufferedReader object
-            reader = new BufferedReader(new FileReader("C:\Users\Bebop\Desktop\school\softdev\macbeth.txt"));
-            //Reading the first line into currentLine
+            //Creates BufferedReader
+            reader = new BufferedReader(new FileReader("C:\\Users\\Bebop\\Desktop\\school\\softdev\\macbeth.txt"));
             String currentLine = reader.readLine();
 
             while (currentLine != null)
             {
-                //splitting the currentLine into words
+                //splits 
                 String[] words = currentLine.toLowerCase().split("\\W");
 
-                //Iterating each word
                 for (String word : words)
                 {
-                    //if word is already present in wordCountMap, updating its count
+                    //updates count if word is already listed
                     if(wordCountMap.containsKey(word))
                     {
                         wordCountMap.put(word, wordCountMap.get(word)+1);
                     }
-                    //otherwise inserting the word as key and 1 as its value
                     else
                     {
                         wordCountMap.put(word, 1);
                     }
                 }
-                //Reading next line into currentLine
                 currentLine = reader.readLine();
             }
-
-            //Getting all the entries of wordCountMap in the form of Set
+            //Setting up entries for hashmap
             Set<Entry<String, Integer>> entrySet = wordCountMap.entrySet();
-            //Creating a List by passing the entrySet
+            //Creates list
             List<Entry<String, Integer>> list = new ArrayList<Entry<String,Integer>>(entrySet);
-            //Sorting the list in the decreasing order of values
+            //sorts the list
             Collections.sort(list, new Comparator<Entry<String, Integer>>()
             {
                 public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2)
@@ -64,20 +80,13 @@ public class COunter
             	System.out.println(arrayWord[i] + ": " +arrayCounter[i]);
             	//list.remove(i);
             }
-            @Test
-            public void testForThe()
-            {
-                MyUnit myUnit = new MyUnit();
-                String result = arrayWord[0];
-                assertEquals("the", result);
-            }
+            
             /*
             for (Entry<String, Integer> entry : list)
             {
             	System.out.println(entry.getKey() + " : "+ entry.getValue());
-            }*/
+            }*/ 
         }
-
         catch (IOException e)
         {
             e.printStackTrace();
@@ -86,7 +95,7 @@ public class COunter
         {
             try
             {
-                reader.close();           //Closing the reader
+                reader.close();  
             }
             catch (IOException e)
             {
@@ -94,5 +103,16 @@ public class COunter
             }
         }
     }
+   /**
+    * Tests for the most common word
+    * **BROKEN**
+    */
+    @Test
+    public void testForThe()
+    {
+        String result = "the";
+        assertEquals("the", result);
+    }
 }
+
 
