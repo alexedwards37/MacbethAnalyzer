@@ -1,1 +1,41 @@
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.junit.Test;
+
+import java.io.*;
+
+public class server {
+/**
+ * connects and sends back the most common word
+ * @param args
+ * @throws IOException
+ */
+	public static void main(String[] args) throws IOException {
+		ServerSocket ss = new ServerSocket(4999);
+		Socket s = ss.accept();
+		
+		System.out.println("connected");
+
+		InputStreamReader in = new InputStreamReader(s.getInputStream());
+		BufferedReader bf = new BufferedReader(in);
+
+		String common = bf.readLine();
+		
+		PrintWriter pw = new PrintWriter(s.getOutputStream());
+
+		pw.println(common);
+		pw.flush();
+	}
+    @Test
+    public void testForThe()
+    {
+    	while(true);
+    }
+}
