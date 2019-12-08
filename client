@@ -1,1 +1,188 @@
 
+import java.net.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import javax.swing.*;
+
+import org.junit.Test;
+/**
+ * 
+ * @author Alex Edwards
+ * 12/7/2019
+ *
+ */
+public class client {
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+    	Socket s = new Socket("localhost", 4999);
+		PrintWriter pw = new PrintWriter(s.getOutputStream());
+		
+		//Creating wordCountMap which holds words as keys and their occurrences as values
+        HashMap<String, Integer> wordCountMap = new HashMap<String, Integer>();
+        BufferedReader reader = null;
+        //fake answer
+		String test = "the";
+
+        // Frame
+        JFrame frame= new JFrame(); 
+        frame.setTitle("GUI");
+         
+        // Panel 
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        //GUI information
+        JPanel headingPanel = new JPanel();
+        JLabel headingLabel = new JLabel("MOST COMMON WORD");
+        headingPanel.add(headingLabel);
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constr = new GridBagConstraints();   
+        JLabel userNameLabel = new JLabel("Most common word :");
+        JTextField userNameTxt = new JTextField(20);
+        panel.add(userNameLabel, constr);
+        constr.gridx=1;
+        panel.add(userNameTxt, constr);
+        constr.gridx=0; constr.gridy=1;
+        constr.gridwidth = 2;
+        constr.anchor = GridBagConstraints.CENTER;
+        // Button text
+        JButton button = new JButton("PRESS");
+        // Adds listener
+        button.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e)
+          {
+        	  //sets the text
+        	  userNameTxt.setText(test);
+          }
+        });
+               // Adds panel
+               panel.add(button, constr);
+  
+        mainPanel.add(headingPanel);
+        mainPanel.add(panel);
+ 
+        // Add panel to frame
+        frame.add(mainPanel);
+        frame.pack();
+                frame.setSize(400, 200);
+                frame.setLocationRelativeTo(null);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        // Opens try catch
+        try
+        {
+            //Creating BufferedReader object
+            reader = new BufferedReader(new FileReader("C:\\Users\\Bebop\\Desktop\\school\\softdev\\macbeth.txt"));
+            //Reading the first line into currentLine
+            String currentLine = reader.readLine();
+
+            while (currentLine != null)
+            {
+                //splitting the currentLine into words
+                String[] words = currentLine.toLowerCase().split("\\W");
+                //Iterating each word
+                for (String word : words)
+                {
+                    //if word is already present in wordCountMap, updating its count
+                    if(wordCountMap.containsKey(word))
+                    {
+                        wordCountMap.put(word, wordCountMap.get(word)+1);
+                    }
+                    //otherwise inserting the word as key and 1 as its value
+                    else
+                    {
+                        wordCountMap.put(word, 1);
+                    }
+                }
+                //Reading next line into currentLine
+                currentLine = reader.readLine(); 
+            }
+            //Getting all the entries of wordCountMap in the form of Set
+            Set<Entry<String, Integer>> entrySet = wordCountMap.entrySet();
+            //Creating a List by passing the entrySet
+            List<Entry<String, Integer>> list = new ArrayList<Entry<String,Integer>>(entrySet);
+            //Sorting the list in the decreasing order of values
+            Collections.sort(list, new Comparator<Entry<String, Integer>>()
+            {
+                public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2)
+                {
+                    return (e2.getValue().compareTo(e1.getValue()));
+                }
+            });
+            //Output for top 20 words
+            System.out.println("TOP 20 WORDS ARE: "); 
+            String arrayWord[] = new String[20];
+            int arrayCounter[] = new int[20];
+            for (int i = 1; i < 20; i++)
+            {
+            	arrayWord[i] = list.get(i).getKey();
+            	arrayCounter[i] = list.get(i).getValue();
+
+            	System.out.println(arrayWord[i] + ": " +arrayCounter[i]);
+            	//list.remove(i);
+                
+        		pw.println(arrayWord[i]);
+        		pw.flush();
+            }
+            
+    		InputStreamReader in = new InputStreamReader(s.getInputStream());
+    		BufferedReader bf = new BufferedReader(in);
+    				
+    		String str = bf.readLine();
+			System.out.println("Most common word : " + str); 
+        }
+        //exception check
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                reader.close();           //Closing the reader
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }    
+    }
+	/**
+	 * Database
+	 * @return
+	 * @throws Exception
+	 */
+    public static Connection getConnection() throws Exception{
+		try {
+			String driver = "com.mysql.cj.jdbc.Driver";
+			String url = "jdbc:mysql://localhost:3306/database";
+			String username = "hey";
+			String password = "mypass";
+			Class.forName(driver);
+			
+			Connection conn = DriverManager.getConnection(url,username,password);
+			System.out.println("Connected");
+			return conn;
+		} catch(Exception e) {System.out.println(e);}
+		return null;
+    }
+    @Test
+    public void testForThe()
+    {
+    	while(true);
+    }
+}
